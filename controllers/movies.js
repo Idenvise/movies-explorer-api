@@ -22,7 +22,6 @@ module.exports.postMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    movieId,
     nameRU,
     nameEN,
   } = req.body;
@@ -35,7 +34,6 @@ module.exports.postMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    movieId,
     nameRU,
     nameEN,
     owner: req.params._id,
