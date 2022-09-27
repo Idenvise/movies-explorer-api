@@ -3,20 +3,36 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
 const { errors, Joi, celebrate } = require('celebrate');
+const rateLimiter = require('express-rate-limit');
 const { ERROR_SERVER } = require('./errors/errors');
 const { moviesRouter, usersRouter } = require('./routes/index');
 const { login, postUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/notFoundError');
 const { options } = require('./middlewares/cors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+const limiter = rateLimiter({
+  windowMs: 1000,
+  max: 1,
+});
+
+const { mongo } = process.env;
 
 const { PORT = 3000 } = process.env;
 const app = express();
+
+app.use(limiter);
+
 app.use('*', cors(options));
+app.use(helmet());
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(mongo);
+
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -41,6 +57,8 @@ app.use('/', usersRouter);
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Страница не существует'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
