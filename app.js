@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const helmet = require('helmet');
 const { errors, Joi, celebrate } = require('celebrate');
 const rateLimiter = require('express-rate-limit');
 const { ERROR_SERVER } = require('./errors/errors');
@@ -19,17 +18,16 @@ const limiter = rateLimiter({
   max: 1,
 });
 
-const { mongo, PORT = 3000 } = process.env;
+const { NODE_ENV, mongo, PORT = 3000 } = process.env;
 
 const app = express();
 
 app.use(limiter);
 
 app.use('*', cors(options));
-app.use(helmet());
 app.use(bodyParser.json());
 
-mongoose.connect(mongo);
+mongoose.connect(NODE_ENV === 'production' ? mongo : 'mongodb://localhost:27017/bitfilmsdb');
 
 app.use(requestLogger);
 
@@ -47,6 +45,8 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
   }),
 }), postUser);
+
+app.use(auth);
 
 app.use('/', moviesRouter);
 app.use('/', usersRouter);
