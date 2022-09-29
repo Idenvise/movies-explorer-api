@@ -48,8 +48,6 @@ app.post('/signup', celebrate({
   }),
 }), postUser);
 
-app.use(auth);
-
 app.use('/', moviesRouter);
 app.use('/', usersRouter);
 
