@@ -19,9 +19,8 @@ const limiter = rateLimiter({
   max: 1,
 });
 
-const { mongo } = process.env;
+const { mongo, PORT = 3000 } = process.env;
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(limiter);
