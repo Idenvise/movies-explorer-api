@@ -19,7 +19,7 @@ const limiter = rateLimiter({
   max: 1,
 });
 
-const { NODE_ENV, mongo, PORT = 3000 } = process.env;
+const { NODE_ENV, MONGO, PORT = 3000 } = process.env;
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.use('*', cors(options));
 app.use(helmet());
 app.use(bodyParser.json());
 
-mongoose.connect(NODE_ENV === 'production' ? mongo : 'mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(NODE_ENV === 'production' ? MONGO : 'mongodb://localhost:27017/bitfilmsdb');
 
 app.use(requestLogger);
 
