@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
 const { errors, Joi, celebrate } = require('celebrate');
 const rateLimiter = require('express-rate-limit');
 const { ERROR_SERVER } = require('./errors/errors');
@@ -25,6 +26,7 @@ const app = express();
 app.use(limiter);
 
 app.use('*', cors(options));
+app.use(helmet());
 app.use(bodyParser.json());
 
 mongoose.connect(NODE_ENV === 'production' ? mongo : 'mongodb://localhost:27017/bitfilmsdb');
