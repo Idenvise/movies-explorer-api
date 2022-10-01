@@ -57,8 +57,6 @@ module.exports.deleteMovie = (req, res, next) => {
       if (req.user._id !== movie.owner._id.toString()) {
         throw new ForbiddenError('Фильм принадлежит другому пользователю');
       }
-      console.log(req.user._id);
-      console.log(movie.owner._id.toString());
       return movie.remove().then(() => res.send({ message: 'Фильм удалён' }));
     })
     .catch((err) => {
