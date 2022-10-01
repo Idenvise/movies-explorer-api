@@ -11,13 +11,7 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Неверный идентификатор'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.patchUser = (req, res, next) => {
