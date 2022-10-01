@@ -4,10 +4,8 @@ const ValidationError = require('../errors/validationError');
 const Movie = require('../models/movies');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({ owner: req.params._id })
-    .orFail(() => {
-      throw new NotFoundError('Нет добавленных фильмов');
-    })
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.send(movies))
     .catch(next);
 };
@@ -24,6 +22,7 @@ module.exports.postMovie = (req, res, next) => {
     thumbnail,
     nameRU,
     nameEN,
+    movieId,
   } = req.body;
   Movie.create({
     country,
@@ -36,11 +35,12 @@ module.exports.postMovie = (req, res, next) => {
     thumbnail,
     nameRU,
     nameEN,
-    owner: req.params._id,
+    owner: req.user._id,
+    movieId,
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new ValidationError('Ошибка валидации'));
         return;
       }
@@ -51,14 +51,15 @@ module.exports.postMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params._id)
     .orFail(() => {
-      throw new NotFoundError('Карточка с данным id не найдена');
+      throw new NotFoundError('Фильм с данным id не найден');
     })
     .then((movie) => {
-      if (req.user._id === !movie.owner._id.toString()) {
+      if (req.user._id !== movie.owner._id.toString()) {
         throw new ForbiddenError('Фильм принадлежит другому пользователю');
       }
-      movie.remove();
-      res.send({ message: 'Фильм удалён' });
+      console.log(req.user._id);
+      console.log(movie.owner._id.toString());
+      return movie.remove().then(() => res.send({ message: 'Фильм удалён' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {

@@ -21,7 +21,7 @@ const movieSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  Image: {
+  image: {
     type: String,
     required: true,
   },
@@ -38,14 +38,14 @@ const movieSchema = mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Number,
     required: true,
   },
-  nameRu: {
+  nameRU: {
     type: String,
     required: true,
   },
-  nameEn: {
+  nameEN: {
     type: String,
     required: true,
   },
