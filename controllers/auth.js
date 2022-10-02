@@ -23,8 +23,7 @@ module.exports.login = (req, res, next) => {
             Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
             return;
           }
-          let genToken = 'Bearer ';
-          genToken += jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'super-giga-mega-secret-key', { expiresIn: '7d' });
+          const genToken = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'super-giga-mega-secret-key', { expiresIn: '7d' });
           res.send({
             token: genToken,
             user: {
