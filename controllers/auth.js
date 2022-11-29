@@ -18,10 +18,10 @@ module.exports.login = (req, res, next) => {
         return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
       return bcrypt.compare(password, user.password)
+        // eslint-disable-next-line consistent-return
         .then((matched) => {
           if (!matched) {
-            Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
-            return;
+            return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
           }
           const genToken = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'super-giga-mega-secret-key', { expiresIn: '7d' });
           res.send({
