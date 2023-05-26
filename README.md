@@ -1,2 +1,6 @@
-# movies-explorer-api
-api.movies.nomoredomains.icu
+## movies-explorer-api
+ Функциональность: создание базы данных фильмов и пользователей, система авторизации пользователей.
+ 
+ Стек: Node.js, Express, MongoDB, Nginx.
+ 
+ Статус проекта: завершен.
